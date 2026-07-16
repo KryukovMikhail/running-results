@@ -135,7 +135,7 @@ layout: null
         }
 
         .table-container {
-            overflow-x: auto; /* Добавляет скролл влево-вправо на узких экранах */
+            overflow-x: auto;
         }
 
         .running-table {
@@ -144,12 +144,11 @@ layout: null
             font-size: 14px;
         }
 
-        /* САМОЕ ГЛАВНОЕ: Рамки вокруг каждой ячейки и запрет переноса слов */
         .running-table th, .running-table td {
             border: 1px solid #333; 
             padding: 10px 15px;
             text-align: left;
-            white-space: nowrap; /* Запрещает переносить слова, таблица будет ровной */
+            white-space: nowrap;
         }
 
         .running-table th {
@@ -159,7 +158,7 @@ layout: null
         }
 
         .running-table tr:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.03); /* Полосатая таблица */
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
         .running-table tr:hover {
@@ -240,27 +239,90 @@ layout: null
             <div class="stats-section">
                 <h3>Общая статистика</h3>
                 <ul class="stats-list">
-                    <li>Всего забегов <span class="stat-value">{{ site.data.runs.size }}</span></li>
-                    
                     {% assign total_dist_m = 0 %}
                     {% assign trail_count = 0 %}
+                    {% assign marathon_count = 0 %}
+                    {% assign ultra_count = 0 %}
+                    
                     {% for run in site.data.runs %}
                         {% assign d = run["Split, м"] | plus: 0 %}
                         {% assign total_dist_m = total_dist_m | plus: d %}
                         {% if run.Trail == "Yes" %}
                             {% assign trail_count = trail_count | plus: 1 %}
                         {% endif %}
+                        <!-- Считаем марафоны и ультры -->
+                        {% if d >= 42100 and d < 43000 %}
+                            {% assign marathon_count = marathon_count | plus: 1 %}
+                        {% elsif d >= 43000 %}
+                            {% assign ultra_count = ultra_count | plus: 1 %}
+                        {% endif %}
                     {% endfor %}
                     
+                    <li>Всего забегов <span class="stat-value">{{ site.data.runs.size }}</span></li>
                     <li>Общий километраж <span class="stat-value">{{ total_dist_m | divided_by: 1000.0 | round: 1 }} км</span></li>
                     <li>Из них трейлов <span class="stat-value">{{ trail_count }}</span></li>
+                    <li>Из них марафонов <span class="stat-value">{{ marathon_count }}</span></li>
+                    <li>Из них ультрамарафонов <span class="stat-value">{{ ultra_count }}</span></li>
+                </ul>
+            </div>
+
+            <!-- БЛОК ЛИЧНЫХ РЕКОРДОВ -->
+            <div class="stats-section">
+                <h3>Личные рекорды</h3>
+                <ul class="stats-list">
+                    <!-- 5 км -->
+                    {% assign best_5k = "" %}
+                    {% for run in site.data.runs %}
+                        {% assign dist = run["Split, м"] | plus: 0 %}
+                        {% if dist >= 5000 and dist < 6000 %}
+                            {% if best_5k == "" or run.Result < best_5k %}
+                                {% assign best_5k = run.Result %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if best_5k != "" %}<li>5 км <span class="stat-value">{{ best_5k }}</span></li>{% endif %}
+
+                    <!-- 10 км -->
+                    {% assign best_10k = "" %}
+                    {% for run in site.data.runs %}
+                        {% assign dist = run["Split, м"] | plus: 0 %}
+                        {% if dist >= 10000 and dist < 11000 %}
+                            {% if best_10k == "" or run.Result < best_10k %}
+                                {% assign best_10k = run.Result %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if best_10k != "" %}<li>10 км <span class="stat-value">{{ best_10k }}</span></li>{% endif %}
+
+                    <!-- Полумарафон -->
+                    {% assign best_hm = "" %}
+                    {% for run in site.data.runs %}
+                        {% assign dist = run["Split, м"] | plus: 0 %}
+                        {% if dist >= 21000 and dist < 22000 %}
+                            {% if best_hm == "" or run.Result < best_hm %}
+                                {% assign best_hm = run.Result %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if best_hm != "" %}<li>Полумарафон <span class="stat-value">{{ best_hm }}</span></li>{% endif %}
+
+                    <!-- Марафон -->
+                    {% assign best_m = "" %}
+                    {% for run in site.data.runs %}
+                        {% assign dist = run["Split, м"] | plus: 0 %}
+                        {% if dist >= 42100 and dist < 43000 %}
+                            {% if best_m == "" or run.Result < best_m %}
+                                {% assign best_m = run.Result %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if best_m != "" %}<li>Марафон <span class="stat-value">{{ best_m }}</span></li>{% endif %}
                 </ul>
             </div>
 
             <div class="stats-section">
-                <h3>Экипировка</h3>
+                <h3>Кроссовки</h3>
                 <ul class="stats-list">
-                    <!-- Новый парсинг: Ищем кроссовки по всей базе, а не только в последних 3 -->
                     {% assign unique_sneakers = "" | split: "" %}
                     {% for run in site.data.runs %}
                         {% if run.Sneakers != "" and run.Sneakers != nil %}
@@ -270,8 +332,7 @@ layout: null
                     
                     {% for sn in unique_sneakers %}
                     <li>
-                        <span>Кроссовки</span>
-                        <span style="color: var(--text-light); font-size: 13px; text-align: right;">{{ sn }}</span>
+                        <span>{{ sn }}</span>
                     </li>
                     {% endfor %}
                 </ul>
@@ -294,7 +355,9 @@ layout: null
                         </tr>
                     </thead>
                     <tbody>
-                        {% for run in site.data.runs reversed %}
+                        <!-- Сортировка по колонке Year от старых к новым -->
+                        {% assign sorted_runs = site.data.runs | sort: "Year" %}
+                        {% for run in sorted_runs %}
                         <tr>
                             <td>{{ run.Date }}</td>
                             <td>
