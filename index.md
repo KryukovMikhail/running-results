@@ -4,14 +4,19 @@ title: Результаты пробежек
 ---
 
 <h1>🏃‍♂️ Мои беговые результаты</h1>
-<p>Здесь я записываю свои пробежки и слежу за прогрессом.</p>
+<p>Дневник соревнований и прогресса.</p>
 
 <style>
+  .table-container {
+    width: 100%;
+    overflow-x: auto; /* Позволяет прокручивать таблицу на телефоне */
+  }
   .running-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     font-size: 14px;
+    min-width: 800px; /* Чтобы таблица не сжималась в кашу */
   }
   .running-table th, .running-table td {
     border: 1px solid #ddd;
@@ -25,28 +30,44 @@ title: Результаты пробежек
   .running-table tr:nth-child(even) {
     background-color: #f9f9f9;
   }
+  .running-table tr:hover {
+    background-color: #f1f1f1;
+  }
 </style>
 
-<table class="running-table">
-  <thead>
-    <tr>
-      <th>Дата</th>
-      <th>Дистанция</th>
-      <th>Время</th>
-      <th>Темп</th>
-      <th>Комментарий</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% assign sorted_runs = site.data.runs | sort: "Дата" | reverse %}
-    {% for run in sorted_runs %}
-    <tr>
-      <td>{{ run.Дата }}</td>
-      <td>{{ run.Дистанция }}</td>
-      <td>{{ run.Время }}</td>
-      <td>{{ run.Темп }}</td>
-      <td>{{ run.Комментарий }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="table-container">
+  <table class="running-table">
+    <thead>
+      <tr>
+        <th>Дата</th>
+        <th>Соревнование</th>
+        <th>Дистанция</th>
+        <th>Результат</th>
+        <th>Темп</th>
+        <th>Место</th>
+        <th>Кроссовки</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for run in site.data.runs reversed %}
+      <tr>
+        <td>{{ run.Date }}</td>
+        <td><strong>{{ run.Competition }}</strong></td>
+        <td>
+          {% comment %} Переводим метры в километры {% endcomment %}
+          {% assign dist_m = run["Split, м"] | plus: 0 %}
+          {% if dist_m >= 1000 %}
+            {{ dist_m | divided_by: 1000.0 }} км
+          {% elsif dist_m > 0 %}
+            {{ dist_m }} м
+          {% endif %}
+        </td>
+        <td>{{ run.Result }}</td>
+        <td>{{ run.Pace }}</td>
+        <td>{{ run["Place Overall"] }}</td>
+        <td>{{ run.Sneakers }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
