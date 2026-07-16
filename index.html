@@ -138,11 +138,15 @@ layout: null
             overflow-x: auto;
         }
 
-        .running-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            min-width: 600px;
+        .running-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #222;
+            color: var(--text-dark);
+            white-space: nowrap; /* ЭТО САМОЕ ГЛАВНОЕ - запрещает переносить слова в клетках */
+        }
+
+        .running-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02); /* Едва заметная зебра для читаемости */
         }
 
         .running-table th {
