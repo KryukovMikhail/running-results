@@ -170,15 +170,11 @@ layout: null
             color: var(--text-light);
         }
 
-        .pb-badge {
-            background: rgba(56, 189, 248, 0.2);
-            color: var(--secondary-color);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            margin-left: 8px;
-            font-weight: bold;
-            border: 1px solid rgba(56, 189, 248, 0.3);
+        /* Стиль для значка PB в таблице */
+        .pb-table-badge {
+            font-size: 18px; /* Крупный эмодзи */
+            text-align: center;
+            display: block;
         }
 
         .trail-badge {
@@ -201,6 +197,21 @@ layout: null
         .pace {
             font-family: monospace;
             color: var(--text-muted);
+        }
+
+        .protocol-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 13px;
+            border: 1px solid var(--secondary-color);
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .protocol-link:hover {
+            background: var(--secondary-color);
+            color: #000;
         }
 
         @media (max-width: 768px) {
@@ -250,7 +261,6 @@ layout: null
                         {% if run.Trail == "Yes" %}
                             {% assign trail_count = trail_count | plus: 1 %}
                         {% endif %}
-                        <!-- Считаем марафоны и ультры -->
                         {% if d >= 42100 and d < 43000 %}
                             {% assign marathon_count = marathon_count | plus: 1 %}
                         {% elsif d >= 43000 %}
@@ -266,11 +276,9 @@ layout: null
                 </ul>
             </div>
 
-            <!-- БЛОК ЛИЧНЫХ РЕКОРДОВ -->
             <div class="stats-section">
                 <h3>Личные рекорды</h3>
                 <ul class="stats-list">
-                    <!-- 5 км -->
                     {% assign best_5k = "" %}
                     {% for run in site.data.runs %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
@@ -282,7 +290,6 @@ layout: null
                     {% endfor %}
                     {% if best_5k != "" %}<li>5 км <span class="stat-value">{{ best_5k }}</span></li>{% endif %}
 
-                    <!-- 10 км -->
                     {% assign best_10k = "" %}
                     {% for run in site.data.runs %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
@@ -294,7 +301,6 @@ layout: null
                     {% endfor %}
                     {% if best_10k != "" %}<li>10 км <span class="stat-value">{{ best_10k }}</span></li>{% endif %}
 
-                    <!-- Полумарафон -->
                     {% assign best_hm = "" %}
                     {% for run in site.data.runs %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
@@ -306,7 +312,6 @@ layout: null
                     {% endfor %}
                     {% if best_hm != "" %}<li>Полумарафон <span class="stat-value">{{ best_hm }}</span></li>{% endif %}
 
-                    <!-- Марафон -->
                     {% assign best_m = "" %}
                     {% for run in site.data.runs %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
@@ -350,12 +355,13 @@ layout: null
                             <th>Соревнование</th>
                             <th>Дистанция</th>
                             <th>Результат</th>
+                            <th>PB</th> <!-- ОТДЕЛЬНАЯ КОЛОНКА ДЛЯ PB -->
                             <th>Темп</th>
                             <th>Место</th>
+                            <th>Протокол</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Сортировка по колонке Year от старых к новым -->
                         {% assign sorted_runs = site.data.runs | sort: "Year" %}
                         {% for run in sorted_runs %}
                         <tr>
@@ -364,7 +370,6 @@ layout: null
                                 <span class="comp-name">
                                     {{ run.Competition }}{{ run["Competition"] }}
                                 </span>
-                                {% if run.PB == "Yes" %}<span class="pb-badge">🏆 PB</span>{% endif %}
                                 {% if run.Trail == "Yes" %}<span class="trail-badge">Trail</span>{% endif %}
                             </td>
                             <td>
@@ -376,8 +381,21 @@ layout: null
                                 {% endif %}
                             </td>
                             <td class="result-time">{{ run.Result }}</td>
+                            
+                            <!-- ОТДЕЛЬНАЯ ЯЧЕЙКА ДЛЯ PB -->
+                            <td class="pb-table-badge">
+                                {% if run.PB == "Yes" %}🏆{% else %}—{% endif %}
+                            </td>
+                            
                             <td class="pace">{{ run.Pace }}</td>
                             <td>{{ run["Place Overall"] }}</td>
+                            <td>
+                                {% if run.Protocol != "" and run.Protocol != nil %}
+                                    <a href="{{ run.Protocol }}" target="_blank" class="protocol-link">Открыть ↗</a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
