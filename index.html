@@ -170,21 +170,10 @@ layout: null
             color: var(--text-light);
         }
 
-        /* Стиль для значка PB в таблице */
         .pb-table-badge {
-            font-size: 18px; /* Крупный эмодзи */
+            font-size: 18px;
             text-align: center;
             display: block;
-        }
-
-        .trail-badge {
-            background: rgba(74, 222, 128, 0.15);
-            color: var(--success-color);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            border: 1px solid rgba(74, 222, 128, 0.3);
         }
 
         .result-time {
@@ -269,7 +258,8 @@ layout: null
                     {% endfor %}
                     
                     <li>Всего забегов <span class="stat-value">{{ site.data.runs.size }}</span></li>
-                    <li>Общий километраж <span class="stat-value">{{ total_dist_m | divided_by: 1000.0 | round: 1 }} км</span></li>
+                    <!-- Округляем до целого (round без цифры) -->
+                    <li>Общий километраж <span class="stat-value">{{ total_dist_m | divided_by: 1000.0 | round }} км</span></li>
                     <li>Из них трейлов <span class="stat-value">{{ trail_count }}</span></li>
                     <li>Из них марафонов <span class="stat-value">{{ marathon_count }}</span></li>
                     <li>Из них ультрамарафонов <span class="stat-value">{{ ultra_count }}</span></li>
@@ -355,7 +345,7 @@ layout: null
                             <th>Соревнование</th>
                             <th>Дистанция</th>
                             <th>Результат</th>
-                            <th>PB</th> <!-- ОТДЕЛЬНАЯ КОЛОНКА ДЛЯ PB -->
+                            <th>PB</th>
                             <th>Темп</th>
                             <th>Место</th>
                             <th>Протокол</th>
@@ -368,9 +358,9 @@ layout: null
                             <td>{{ run.Date }}</td>
                             <td>
                                 <span class="comp-name">
-                                    {{ run.Competition }}{{ run["Competition"] }}
+                                    <!-- Выводим название с защитой от невидимых символов -->
+                                    {{ run.Competition }}{{ run["Competition"] }}{{ run.Соревнование }}{{ run["Соревнование"] }}
                                 </span>
-                                {% if run.Trail == "Yes" %}<span class="trail-badge">Trail</span>{% endif %}
                             </td>
                             <td>
                                 {% assign dist_m = run["Split, м"] | plus: 0 %}
@@ -381,12 +371,9 @@ layout: null
                                 {% endif %}
                             </td>
                             <td class="result-time">{{ run.Result }}</td>
-                            
-                            <!-- ОТДЕЛЬНАЯ ЯЧЕЙКА ДЛЯ PB -->
                             <td class="pb-table-badge">
                                 {% if run.PB == "Yes" %}🏆{% else %}—{% endif %}
                             </td>
-                            
                             <td class="pace">{{ run.Pace }}</td>
                             <td>{{ run["Place Overall"] }}</td>
                             <td>
