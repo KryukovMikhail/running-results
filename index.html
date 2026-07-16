@@ -258,7 +258,6 @@ layout: null
                     {% endfor %}
                     
                     <li>Всего забегов <span class="stat-value">{{ site.data.runs.size }}</span></li>
-                    <!-- Округляем до целого (round без цифры) -->
                     <li>Общий километраж <span class="stat-value">{{ total_dist_m | divided_by: 1000.0 | round }} км</span></li>
                     <li>Из них трейлов <span class="stat-value">{{ trail_count }}</span></li>
                     <li>Из них марафонов <span class="stat-value">{{ marathon_count }}</span></li>
@@ -358,8 +357,7 @@ layout: null
                             <td>{{ run.Date }}</td>
                             <td>
                                 <span class="comp-name">
-                                    <!-- Выводим название с защитой от невидимых символов -->
-                                    {{ run.Competition }}{{ run["Competition"] }}{{ run.Соревнование }}{{ run["Соревнование"] }}
+                                    {{ run.Competition }}
                                 </span>
                             </td>
                             <td>
