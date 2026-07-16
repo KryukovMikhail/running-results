@@ -9,14 +9,14 @@ layout: none
     <title>Михаил Крюков — Беговые результаты</title>
     <style>
         :root {
-            --primary-color: #0f172a;
-            --secondary-color: #38bdf8;
+            --primary-color: #0a0a0a; /* Черный фон сайдбара */
+            --secondary-color: #38bdf8; /* Яркий небесно-голубой */
             --text-dark: #e2e8f0;
             --text-light: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: #334155;
-            --bg-page: #020617;
-            --bg-card: #1e293b;
+            --border-color: #333333;
+            --bg-page: #000000; /* Чистый черный фон страницы */
+            --bg-card: #111111; /* Темно-серый фон карточки */
             --success-color: #4ade80;
         }
 
@@ -37,9 +37,10 @@ layout: none
             max-width: 1100px;
             margin: 40px auto;
             background: var(--bg-card);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #222;
         }
 
         .content-wrapper {
@@ -52,6 +53,7 @@ layout: none
             background-color: var(--primary-color);
             color: var(--text-light);
             padding: 40px 30px;
+            border-right: 1px solid #222;
         }
 
         .profile-header {
@@ -59,10 +61,16 @@ layout: none
             margin-bottom: 40px;
         }
 
-        .avatar-icon {
-            font-size: 64px;
-            margin-bottom: 15px;
+        /* Стиль для фото (как на резюме) */
+        .avatar-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--secondary-color);
+            margin: 0 auto 15px;
             display: block;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
         }
 
         .sidebar h1 {
@@ -115,12 +123,6 @@ layout: none
             color: var(--secondary-color);
         }
 
-        .latest-sneakers {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
         /* Main Content Styles */
         .main-content {
             width: 70%;
@@ -152,7 +154,7 @@ layout: none
         }
 
         .running-table th {
-            background-color: #0f172a;
+            background-color: #0a0a0a;
             color: var(--secondary-color);
             padding: 14px 16px;
             text-align: left;
@@ -163,7 +165,7 @@ layout: none
 
         .running-table td {
             padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid #222;
             color: var(--text-dark);
         }
 
@@ -225,6 +227,8 @@ layout: none
             .sidebar {
                 width: 100%;
                 padding: 30px 20px;
+                border-right: none;
+                border-bottom: 1px solid #222;
             }
             .main-content {
                 width: 100%;
@@ -238,10 +242,10 @@ layout: none
 <div class="container">
     <div class="content-wrapper">
         
-        <!-- САЙДБАР С СОБОЙ И СТАТИСТИКОЙ -->
+        <!-- САЙДБАР С ФОТО И СТАТИСТИКОЙ -->
         <aside class="sidebar">
             <div class="profile-header">
-                <span class="avatar-icon">🏃‍♂️</span>
+                <img src="photo.jpg" alt="Михаил Крюков" class="avatar-img">
                 <h1>Михаил Крюков</h1>
                 <h2>Дневник забегов</h2>
             </div>
@@ -249,7 +253,6 @@ layout: none
             <div class="stats-section">
                 <h3>Общая статистика</h3>
                 <ul class="stats-list">
-                    <!-- Jekyll сам посчитает эти значения из вашего CSV! -->
                     <li>Всего забегов <span class="stat-value">{{ site.data.runs.size }}</span></li>
                     
                     {% assign total_dist_m = 0 %}
@@ -270,12 +273,11 @@ layout: none
             <div class="stats-section">
                 <h3>Экипировка</h3>
                 <ul class="stats-list">
-                    <!-- Выводим последние кроссовки из базы -->
-                    {% for run in site.data.runs reversed limit: 5 %}
+                    {% for run in site.data.runs reversed limit: 3 %}
                         {% if run.Sneakers != "" and run.Sneakers != nil %}
                         <li>
-                            Бегал в <br>
-                            <span style="color: var(--text-light); font-size: 13px;">{{ run.Sneakers }}</span>
+                            <span>Бегал в</span>
+                            <span style="color: var(--text-light); font-size: 13px; text-align: right;">{{ run.Sneakers }}</span>
                         </li>
                         {% endif %}
                     {% endfor %}
