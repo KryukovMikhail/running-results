@@ -7,7 +7,6 @@ layout: null
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Михаил Крюков — Беговые результаты</title>
-    <!-- Вот эта строчка добавляет иконку: -->
     <link rel="icon" href="favicon.png" type="image/png">
     <style>
         :root {
@@ -116,11 +115,32 @@ layout: null
             border: 1px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .stat-value {
             font-weight: bold;
             color: var(--secondary-color);
+        }
+
+        .links-list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 15px;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+
+        .links-list a:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--secondary-color);
         }
 
         .main-content {
@@ -134,6 +154,27 @@ layout: null
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
             margin-bottom: 25px;
+        }
+
+        .table-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .year-select {
+            background-color: #0a0a0a;
+            color: var(--secondary-color);
+            border: 1px solid #333;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .year-select:focus {
+            border-color: var(--secondary-color);
         }
 
         .table-container {
@@ -238,6 +279,17 @@ layout: null
                 <h2>Дневник забегов</h2>
             </div>
 
+            <!-- БЛОК ССЫЛОК НА ПРОФИЛИ -->
+            <div class="stats-section">
+                <h3>Профили</h3>
+                <div class="links-list">
+                    <!-- ЗАМЕНИТЕ # НА ВАШИ ССЫЛКИ -->
+                    <a href="#" target="_blank">🏃‍♂️ Strava</a>
+                    <a href="#" target="_blank">⌚ Garmin</a>
+                    <a href="#" target="_blank">💰 MoneyRun</a>
+                </div>
+            </div>
+
             <div class="stats-section">
                 <h3>Общая статистика</h3>
                 <ul class="stats-list">
@@ -246,7 +298,9 @@ layout: null
                     {% assign marathon_count = 0 %}
                     {% assign ultra_count = 0 %}
                     
-                    {% for run in site.data.runs %}
+                    <!-- Фильтруем: считаем статистику ТОЛЬКО по бегу -->
+                    {% assign running_data = site.data.runs | where: "Type", "Бег" %}
+                    {% for run in running_data %}
                         {% assign d = run["Split, м"] | plus: 0 %}
                         {% assign total_dist_m = total_dist_m | plus: d %}
                         {% if run.Trail == "Yes" %}
@@ -259,7 +313,7 @@ layout: null
                         {% endif %}
                     {% endfor %}
                     
-                    <li>Всего забегов <span class="stat-value">{{ site.data.runs.size }}</span></li>
+                    <li>Всего забегов <span class="stat-value">{{ running_data.size }}</span></li>
                     <li>Общий километраж <span class="stat-value">{{ total_dist_m | divided_by: 1000.0 | round }} км</span></li>
                     <li>Из них трейлов <span class="stat-value">{{ trail_count }}</span></li>
                     <li>Из них марафонов <span class="stat-value">{{ marathon_count }}</span></li>
@@ -271,7 +325,7 @@ layout: null
                 <h3>Личные рекорды</h3>
                 <ul class="stats-list">
                     {% assign best_5k = "" %}
-                    {% for run in site.data.runs %}
+                    {% for run in running_data %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
                         {% if dist >= 5000 and dist < 6000 %}
                             {% if best_5k == "" or run.Result < best_5k %}
@@ -282,7 +336,7 @@ layout: null
                     {% if best_5k != "" %}<li>5 км <span class="stat-value">{{ best_5k }}</span></li>{% endif %}
 
                     {% assign best_10k = "" %}
-                    {% for run in site.data.runs %}
+                    {% for run in running_data %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
                         {% if dist >= 10000 and dist < 11000 %}
                             {% if best_10k == "" or run.Result < best_10k %}
@@ -293,7 +347,7 @@ layout: null
                     {% if best_10k != "" %}<li>10 км <span class="stat-value">{{ best_10k }}</span></li>{% endif %}
 
                     {% assign best_hm = "" %}
-                    {% for run in site.data.runs %}
+                    {% for run in running_data %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
                         {% if dist >= 21000 and dist < 22000 %}
                             {% if best_hm == "" or run.Result < best_hm %}
@@ -304,7 +358,7 @@ layout: null
                     {% if best_hm != "" %}<li>Полумарафон <span class="stat-value">{{ best_hm }}</span></li>{% endif %}
 
                     {% assign best_m = "" %}
-                    {% for run in site.data.runs %}
+                    {% for run in running_data %}
                         {% assign dist = run["Split, м"] | plus: 0 %}
                         {% if dist >= 42100 and dist < 43000 %}
                             {% if best_m == "" or run.Result < best_m %}
@@ -320,7 +374,7 @@ layout: null
                 <h3>Кроссовки</h3>
                 <ul class="stats-list">
                     {% assign unique_sneakers = "" | split: "" %}
-                    {% for run in site.data.runs %}
+                    {% for run in running_data %}
                         {% if run.Sneakers != "" and run.Sneakers != nil %}
                             {% assign unique_sneakers = unique_sneakers | push: run.Sneakers | uniq %}
                         {% endif %}
@@ -338,6 +392,13 @@ layout: null
         <main class="main-content">
             <h2>История результатов</h2>
             
+            <!-- ФИЛЬТР ПО ГОДУ -->
+            <div class="table-controls">
+                <select id="year-select" class="year-select">
+                    <option value="all">Все годы</option>
+                </select>
+            </div>
+
             <div class="table-container">
                 <table class="running-table">
                     <thead>
@@ -350,12 +411,14 @@ layout: null
                             <th>Темп</th>
                             <th>Место</th>
                             <th>Протокол</th>
+                            <th>Кроссовки</th> <!-- НОВЫЙ СТОЛБЕЦ -->
                         </tr>
                     </thead>
                     <tbody>
-                        {% assign sorted_runs = site.data.runs | sort: "Year" %}
+                        <!-- Фильтруем: выводим ТОЛЬКО бег -->
+                        {% assign sorted_runs = running_data | sort: "Year" %}
                         {% for run in sorted_runs %}
-                        <tr>
+                        <tr data-year="{{ run.Year }}">
                             <td>{{ run.Date }}</td>
                             <td>
                                 <span class="comp-name">
@@ -383,6 +446,14 @@ layout: null
                                     —
                                 {% endif %}
                             </td>
+                            <!-- НОВЫЙ СТОЛБЕЦ КРОССОВКИ -->
+                            <td>
+                                {% if run.Sneakers != "" and run.Sneakers != nil %}
+                                    {{ run.Sneakers }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -392,6 +463,42 @@ layout: null
         
     </div>
 </div>
+
+<!-- СКРИПТ ДЛЯ ФИЛЬТРА ПО ГОДАМ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.querySelector('.running-table');
+        const rows = table.querySelectorAll('tbody tr');
+        const select = document.getElementById('year-select');
+        const years = new Set();
+
+        // Собираем уникальные годы из таблицы
+        rows.forEach(row => {
+            const year = row.getAttribute('data-year');
+            if (year) years.add(year);
+        });
+
+        // Добавляем годы в выпадающий список (сортируем по убыванию)
+        Array.from(years).sort().reverse().forEach(year => {
+            let option = document.createElement('option');
+            option.value = year;
+            option.text = year;
+            select.appendChild(option);
+        });
+
+        // Логика фильтрации при выборе года
+        select.addEventListener('change', function() {
+            const selectedYear = this.value;
+            rows.forEach(row => {
+                if (selectedYear === 'all' || row.getAttribute('data-year') === selectedYear) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html}
