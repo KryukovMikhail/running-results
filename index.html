@@ -246,6 +246,39 @@ layout: null
             color: #000;
         }
 
+        /* Стили для блока историй */
+        .stories-section {
+            margin-top: 50px;
+        }
+
+        .story-item {
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.03);
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .story-item h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .story-item h3 a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .story-item h3 a:hover {
+            color: var(--secondary-color);
+        }
+
+        .story-date {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
         @media (max-width: 768px) {
             .content-wrapper {
                 flex-direction: column;
@@ -279,14 +312,21 @@ layout: null
                 <h2>Дневник забегов</h2>
             </div>
 
-            <!-- БЛОК ССЫЛОК НА ПРОФИЛИ -->
+            <!-- ПРОФИЛИ -->
             <div class="stats-section">
                 <h3>Профили</h3>
                 <div class="links-list">
-                    <!-- ЗАМЕНИТЕ # НА ВАШИ ССЫЛКИ -->
-                    <a href="https://connect.garmin.com/app/profile/96bfd72d-b6f7-4463-bf85-3719add52eb3" target="_blank">⌚ Garmin</a>
-                    <a href="https://www.strava.com/athletes/42669164" target="_blank">🏃‍♂️ Strava</a>
-                    <a href="#" target="_blank">💰 MoneyRun</a>
+                    <a href="#" target="_blank">🏃‍♂️ Strava</a>
+                    <a href="#" target="_blank">⌚ Garmin</a>
+                </div>
+            </div>
+
+            <!-- МОЙ КАНАЛ -->
+            <div class="stats-section">
+                <h3>Мой канал</h3>
+                <div class="links-list">
+                    <!-- ЗАМЕНИТЕ # НА ССЫЛКУ НА ВАШ TELEGRAM -->
+                    <a href="https://t.me/RunningLikeLife" target="_blank">📱 Telegram</a>
                 </div>
             </div>
 
@@ -298,7 +338,6 @@ layout: null
                     {% assign marathon_count = 0 %}
                     {% assign ultra_count = 0 %}
                     
-                    <!-- Фильтруем: считаем статистику ТОЛЬКО по бегу -->
                     {% assign running_data = site.data.runs | where: "Type", "Бег" %}
                     {% for run in running_data %}
                         {% assign d = run["Split, м"] | plus: 0 %}
@@ -392,7 +431,6 @@ layout: null
         <main class="main-content">
             <h2>История результатов</h2>
             
-            <!-- ФИЛЬТР ПО ГОДУ -->
             <div class="table-controls">
                 <select id="year-select" class="year-select">
                     <option value="all">Все годы</option>
@@ -411,11 +449,10 @@ layout: null
                             <th>Темп</th>
                             <th>Место</th>
                             <th>Протокол</th>
-                            <th>Кроссовки</th> <!-- НОВЫЙ СТОЛБЕЦ -->
+                            <th>Кроссовки</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Фильтруем: выводим ТОЛЬКО бег -->
                         {% assign sorted_runs = running_data | sort: "Year" %}
                         {% for run in sorted_runs %}
                         <tr data-year="{{ run.Year }}">
@@ -446,7 +483,6 @@ layout: null
                                     —
                                 {% endif %}
                             </td>
-                            <!-- НОВЫЙ СТОЛБЕЦ КРОССОВКИ -->
                             <td>
                                 {% if run.Sneakers != "" and run.Sneakers != nil %}
                                     {{ run.Sneakers }}
@@ -459,12 +495,32 @@ layout: null
                     </tbody>
                 </table>
             </div>
+
+            <!-- РАЗДЕЛ МОИ ИСТОРИИ -->
+            <div class="stories-section">
+                <h2>Мои истории</h2>
+                
+                <!-- ШАБЛОН СТАТЬИ: Скопируйте этот блок, чтобы добавить новую статью -->
+                <div class="story-item">
+                    <h3><a href="ССЫЛКА_НА_СТАТЬЮ" target="_blank">Название статьи о забеге</a></h3>
+                    <p class="story-date">Дата или краткое описание</p>
+                </div>
+                <!-- КОНЕЦ ШАБЛОНА -->
+
+                <!-- Пример (можно удалить):
+                <div class="story-item">
+                    <h3><a href="https://example.com" target="_blank">Как я пробежал свой первый марафон</a></h3>
+                    <p class="story-date">Октябрь 2024</p>
+                </div>
+                -->
+
+            </div>
+
         </main>
         
     </div>
 </div>
 
-<!-- СКРИПТ ДЛЯ ФИЛЬТРА ПО ГОДАМ -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const table = document.querySelector('.running-table');
@@ -472,13 +528,11 @@ layout: null
         const select = document.getElementById('year-select');
         const years = new Set();
 
-        // Собираем уникальные годы из таблицы
         rows.forEach(row => {
             const year = row.getAttribute('data-year');
             if (year) years.add(year);
         });
 
-        // Добавляем годы в выпадающий список (сортируем по убыванию)
         Array.from(years).sort().reverse().forEach(year => {
             let option = document.createElement('option');
             option.value = year;
@@ -486,7 +540,6 @@ layout: null
             select.appendChild(option);
         });
 
-        // Логика фильтрации при выборе года
         select.addEventListener('change', function() {
             const selectedYear = this.value;
             rows.forEach(row => {
