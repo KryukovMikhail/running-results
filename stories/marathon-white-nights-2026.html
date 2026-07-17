@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История забега</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <style>
+        :root {
+            --primary-color: #0a0a0a;
+            --secondary-color: #38bdf8;
+            --text-dark: #e2e8f0;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #333333;
+            --bg-page: #000000;
+            --bg-card: #111111;
+            --success-color: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .story-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--bg-card);
+            padding: 40px 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 14px;
+            border: 1px solid var(--secondary-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: var(--secondary-color);
+            color: #000;
+        }
+
+        .story-title {
+            font-size: 28px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .story-date {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .story-content p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .story-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .story-container {
+                margin: 0;
+                border-radius: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="story-container">
+    <a href="/" class="back-link">← Назад к результатам</a>
+    
+    <h1 class="story-title">Как я пробежал свой первый марафон</h1>
+    <p class="story-date">Октябрь 2024</p>
+
+    <div class="story-content">
+        <!-- Здесь пишите текст вашей статьи. Текст оборачивайте в теги <p> </p> -->
+        
+        <p>Это пример первого абзаца. Расскажите о том, как готовились к забегу, какие эмоции испытывали на старте и как дался финиш.</p>
+        
+        <p>Второй абзац. Если хотите добавить фото, используйте тег img:</p>
+        
+        <!-- Пример добавления картинки (загрузите фото в папку images/ в репозитории) -->
+        <!-- <img src="/images/finish.jpg" alt="Финиш"> -->
+        
+        <p>Третий абзац с выводами и благодарностями.</p>
+    </div>
+</div>
+
+</body>
+</html>
