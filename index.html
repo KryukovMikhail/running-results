@@ -351,9 +351,9 @@ layout: null
                             {% assign ultra_count = ultra_count | plus: 1 %}
                         {% endif %}
                     {% endfor %}
-                    
-                    <li>Всего забегов <span class="stat-value">{{ running_data.size }}</span></li>
+
                     <li>Общий километраж <span class="stat-value">{{ total_dist_m | divided_by: 1000.0 | round }} км</span></li>
+                    <li>Всего забегов <span class="stat-value">{{ running_data.size }}</span></li>
                     <li>Из них трейлов <span class="stat-value">{{ trail_count }}</span></li>
                     <li>Из них марафонов <span class="stat-value">{{ marathon_count }}</span></li>
                     <li>Из них ультрамарафонов <span class="stat-value">{{ ultra_count }}</span></li>
