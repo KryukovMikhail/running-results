@@ -453,7 +453,7 @@ layout: null
                         </tr>
                     </thead>
                     <tbody>
-                        {% assign sorted_runs = running_data | sort: "Year" %}
+                        {% assign sorted_runs = running_data %}
                         {% for run in sorted_runs %}
                         <tr data-year="{{ run.Year }}">
                             <td>{{ run.Date }}</td>
