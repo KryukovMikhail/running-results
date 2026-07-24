@@ -523,15 +523,34 @@ layout: null
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const table = document.querySelector('.running-table');
-        const rows = table.querySelectorAll('tbody tr');
+        const tbody = table.querySelector('tbody');
+        // Получаем все строки таблицы как массив
+        const rows = Array.from(tbody.querySelectorAll('tr'));
         const select = document.getElementById('year-select');
         const years = new Set();
 
+        // СОРТИРОВКА ПО ДАТЕ: от старых к новым (Ascending)
+        rows.sort((a, b) => {
+            // Берем текст из первой колонки (Дата)
+            const dateStrA = a.cells[0].innerText; 
+            const dateStrB = b.cells[0].innerText;
+
+            // JavaScript понимает даты в формате "November 10, 2024" 
+            const dateA = new Date(dateStrA);
+            const dateB = new Date(dateStrB);
+
+            // Вычитание дат дает правильный хронологический порядок
+            return dateA - dateB; 
+        });
+
+        // Перестраиваем таблицу в отсортированном порядке
         rows.forEach(row => {
+            tbody.appendChild(row); // Вставляем строку обратно
             const year = row.getAttribute('data-year');
             if (year) years.add(year);
         });
 
+        // Заполняем выпадающий список годами (от новых к старым)
         Array.from(years).sort().reverse().forEach(year => {
             let option = document.createElement('option');
             option.value = year;
@@ -539,6 +558,7 @@ layout: null
             select.appendChild(option);
         });
 
+        // Логика фильтрации по выбранному году
         select.addEventListener('change', function() {
             const selectedYear = this.value;
             rows.forEach(row => {
